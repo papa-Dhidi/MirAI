@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% block title %}Welcome to MirAI{% endblock %}
+
+{% block layout %}
+<div class="bg-slate-900 text-white">
+    <!-- Navbar Khusus Landing Page -->
+    <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+        <div class="text-2xl font-bold">
+            Mir<span class="text-indigo-400">AI</span>
+        </div>
+        <div>
+            <a href="{% url 'login' %}" class="btn btn-ghost">Login</a>
+            <a href="{% url 'signup' %}" class="btn btn-primary ml-2">Get Started</a>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <main class="container mx-auto px-6 text-center pt-24 pb-32">
+        <div class="relative inline-block">
+            <div class="absolute -inset-2 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-full blur-3xl opacity-40"></div>
+            <h1 class="relative text-5xl md:text-7xl font-extrabold tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-slate-200 to-gray-400">
+                Stop Scrolling, Start Watching.
+            </h1>
+        </div>
+        <p class="max-w-2xl mx-auto mt-6 text-lg md:text-xl text-slate-400">
+            MirAI adalah asisten film personal Anda. Dapatkan rekomendasi film yang sangat akurat, temukan permata tersembunyi, dan kelola watchlist Anda dengan mudah.
+        </p>
+        <div class="mt-10">
+            <a href="{% url 'signup' %}" class="btn btn-primary btn-lg shadow-lg shadow-indigo-500/30">
+                Create Your Free Account
+            </a>
+        </div>
+    </main>
+
+    <!-- Fitur Section -->
+    <section class="py-24 bg-slate-900/50">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-bold">Powered by Intelligence</h2>
+                <p class="text-slate-400 mt-2">Fitur-fitur yang dirancang untuk pengalaman menonton terbaik.</p>
+            </div>
+            <div class="grid md:grid-cols-3 gap-10">
+                <!-- Fitur 1 -->
+                <div class="text-center p-8 bg-slate-800/50 rounded-xl border border-slate-700">
+                    <div class="inline-block p-4 bg-indigo-500/10 rounded-full mb-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" /></svg>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">AI Chat Advisor</h3>
+                    <p class="text-slate-400">Mengobrol dengan AI kami untuk menemukan film berdasarkan mood atau preferensi kompleks Anda.</p>
+                </div>
+                <!-- Fitur 2 -->
+                <div class="text-center p-8 bg-slate-800/50 rounded-xl border border-slate-700">
+                    <div class="inline-block p-4 bg-indigo-500/10 rounded-full mb-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" /></svg>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Smart Watchlist</h3>
+                    <p class="text-slate-400">Kelola semua film yang ingin Anda tonton di satu tempat. Mudah ditambahkan, mudah dikelola.</p>
+                </div>
+                <!-- Fitur 3 -->
+                <div class="text-center p-8 bg-slate-800/50 rounded-xl border border-slate-700">
+                    <div class="inline-block p-4 bg-indigo-500/10 rounded-full mb-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" /></svg>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Discover & Trending</h3>
+                    <p class="text-slate-400">Jelajahi film-film yang sedang tren atau gunakan filter canggih untuk menemukan apa yang Anda cari.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+{% endblock %}

@@ -1,0 +1,49 @@
+{% extends "layout/app_layout.html" %}
+{% block title %}Search Movies{% endblock %}
+
+{% block content %}
+<div class="space-y-8">
+    {% if query %}
+        <h1 class="text-3xl font-bold text-white">Search Results for "<span class="text-indigo-400">{{ query }}</span>"</h1>
+        
+        {% if movies %}
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6">
+                {% for movie in movies %}
+                    {% include "components/movie_card.html" with movie=movie %}
+                {% endfor %}
+            </div>
+
+            <!-- Pagination -->
+            <div class="flex justify-center pt-8">
+                <div class="join">
+                    {% if pagination.has_previous %}
+                        <a href="?query={{ query }}&page={{ pagination.current_page|add:'-1' }}" class="join-item btn">«</a>
+                    {% endif %}
+                    <button class="join-item btn">Page {{ pagination.current_page }} of {{ pagination.total_pages }}</button>
+                    {% if pagination.has_next %}
+                         <a href="?query={{ query }}&page={{ pagination.current_page|add:'1' }}" class="join-item btn">»</a>
+                    {% endif %}
+                </div>
+            </div>
+        {% else %}
+            <div class="text-center py-24 bg-slate-800/50 rounded-xl">
+                <h2 class="text-2xl font-semibold">No results found</h2>
+                <p class="text-slate-400 mt-2">We couldn't find any movies matching your search. Please try again.</p>
+            </div>
+        {% endif %}
+
+    {% else %}
+        <!-- Search Prompt -->
+        <div class="text-center py-24">
+            <h1 class="text-4xl font-bold text-white">Search for any movie</h1>
+            <p class="text-slate-400 mt-2">Find details, cast, and more.</p>
+            <form action="{% url 'movies:search' %}" method="get" class="mt-8 max-w-lg mx-auto">
+                <div class="relative">
+                    <input type="search" name="query" placeholder="e.g., Inception, The Matrix..." class="input input-lg input-bordered w-full pl-5 pr-16 focus:ring-2 focus:ring-indigo-500/50 bg-slate-800">
+                    <button type="submit" class="btn btn-primary btn-lg absolute top-0 right-0 rounded-l-none">Search</button>
+                </div>
+            </form>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

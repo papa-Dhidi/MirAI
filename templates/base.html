@@ -1,0 +1,40 @@
+{% comment %}
+File: templates/base.html
+Tujuan: File HTML root yang memuat semua aset global (CSS, Font) dan mendefinisikan block layout utama.
+{% endcomment %}
+{% load static tailwind_tags %}
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <title>{% block title %}MirAI{% endblock %} - Your AI Movie Advisor</title>
+
+    <link rel="icon" href="{% static 'images/favicon.svg' %}" type="image/svg+xml">
+
+    {# Google Fonts: Inter #}
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    {# Tailwind CSS - Dikelola oleh django-tailwind #}
+    {% tailwind_css %}
+
+    {# Alpine.js untuk interaktivitas ringan pada UI #}
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-slate-900">
+    
+    {# Block ini akan diisi oleh Global Layout Container #}
+    {% block layout %}
+    {% endblock %}
+
+</body>
+</html>

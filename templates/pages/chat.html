@@ -1,0 +1,183 @@
+{% extends "layout/app_layout.html" %}
+{% block title %}Chat Advisor{% endblock %}
+
+{% block content %}
+<div class="flex flex-col h-[75vh] max-w-3xl mx-auto bg-slate-800 rounded-lg shadow-xl">
+    <!-- Header -->
+    <div class="p-4 border-b border-slate-700">
+        <h1 class="text-xl font-bold text-white text-center">MirAI Chat Advisor</h1>
+        <p class="text-sm text-center text-blue-400">Your personal movie assistant</p>
+    </div>
+
+    <!-- Message Display Area -->
+    <div id="message-list" class="flex-1 p-6 space-y-4 overflow-y-auto">
+        <!-- Initial Welcome Message -->
+        <div class="flex items-start gap-3">
+            <div class="bg-blue-600 p-2 rounded-full">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707.707M12 21v-1m0-16a9 9 0 110 18 9 9 0 010-18z"></path></svg>
+            </div>
+            <div class="bg-slate-700 rounded-lg p-3 max-w-lg">
+                <p class="text-sm">Hello! I'm MirAI. How can I help you find the perfect movie today? You can ask me for recommendations like "find movies similar to Inception" or just have a general chat.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Typing Indicator -->
+    <div id="typing-indicator" class="px-6 pb-2 hidden">
+        <div class="flex items-start gap-3">
+            <div class="bg-blue-600 p-2 rounded-full">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707.707M12 21v-1m0-16a9 9 0 110 18 9 9 0 010-18z"></path></svg>
+            </div>
+            <div class="bg-slate-700 rounded-lg p-3 max-w-lg flex items-center space-x-2">
+                <span class="text-sm text-gray-400">MirAI is typing</span>
+                <div class="w-2 h-2 bg-blue-400 rounded-full animate-pulse" style="animation-delay: 0s;"></div>
+                <div class="w-2 h-2 bg-blue-400 rounded-full animate-pulse" style="animation-delay: 0.2s;"></div>
+                <div class="w-2 h-2 bg-blue-400 rounded-full animate-pulse" style="animation-delay: 0.4s;"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Input Form -->
+    <div class="p-4 border-t border-slate-700">
+        <form id="chat-form" class="flex items-center gap-3">
+            <input type="text" id="chat-input" placeholder="Ask for a movie recommendation..."
+                   class="flex-1 bg-slate-700 border-slate-600 rounded-full py-2 px-4 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                   autocomplete="off">
+            <button type="submit" class="bg-blue-600 text-white rounded-full p-3 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-slate-500">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+            </button>
+        </form>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const chatForm = document.getElementById('chat-form');
+        const chatInput = document.getElementById('chat-input');
+        const messageList = document.getElementById('message-list');
+        const typingIndicator = document.getElementById('typing-indicator');
+        const submitButton = chatForm.querySelector('button[type="submit"]');
+
+        // --- New: Manage the entire conversation history ---
+        const chatHistory = [];
+
+        // Function to add a message to the UI
+        function addMessage(sender, text, isCard = false) {
+            const messageDiv = document.createElement('div');
+            let messageContent = '';
+
+            if (sender === 'user') {
+                messageContent = `
+                    <div class="flex items-start gap-3 justify-end">
+                        <div class="bg-blue-600 rounded-lg p-3 max-w-lg">
+                            <p class="text-sm text-white">${text}</p>
+                        </div>
+                    </div>
+                `;
+            } else { // 'ai'
+                if (isCard) {
+                    messageContent = `
+                        <div class="flex items-start gap-3">
+                            <div class="bg-blue-600 p-2 rounded-full self-start mt-1">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707.707M12 21v-1m0-16a9 9 0 110 18 9 9 0 010-18z"></path></svg>
+                            </div>
+                            <div class="w-full">${text}</div>
+                        </div>
+                    `;
+                } else {
+                    messageContent = `
+                        <div class="flex items-start gap-3">
+                            <div class="bg-blue-600 p-2 rounded-full">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707.707M12 21v-1m0-16a9 9 0 110 18 9 9 0 010-18z"></path></svg>
+                            </div>
+                            <div class="bg-slate-700 rounded-lg p-3 max-w-lg">
+                                <p class="text-sm">${text}</p>
+                            </div>
+                        </div>
+                    `;
+                }
+            }
+            messageDiv.innerHTML = messageContent;
+            messageList.appendChild(messageDiv);
+            messageList.scrollTop = messageList.scrollHeight;
+        }
+
+        // Handle form submission
+        chatForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const userInput = chatInput.value.trim();
+            if (!userInput) return;
+
+            addMessage('user', userInput);
+            chatHistory.push({ role: 'user', parts: [{ text: userInput }] });
+            
+            chatInput.value = '';
+            submitButton.disabled = true;
+            typingIndicator.classList.remove('hidden');
+
+            try {
+                const response = await fetch("{% url 'chat:api' %}", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': '{{ csrf_token }}'
+                    },
+                    body: JSON.stringify({ 
+                        prompt: userInput, 
+                        history: chatHistory.slice(0, -1) // Send history *before* the current message
+                    })
+                });
+
+                if (!response.ok) throw new Error('Network response was not ok.');
+
+                const data = await response.json();
+                
+                let aiResponseText = '';
+                let isCardResponse = false;
+
+                if (data.recommendations && data.recommendations.length > 0) {
+                    isCardResponse = true;
+                    aiResponseText = `
+                        <p class="text-sm mb-4">I found these movies for you based on our conversation:</p>
+                        <div class="carousel carousel-center w-full space-x-4">
+                            ${data.recommendations.map(movie => `
+                                <div class="carousel-item w-32">
+                                    <div class="group relative bg-slate-800 rounded-lg overflow-hidden shadow-lg hover:shadow-blue-500/20">
+                                        <a href="/movies/${movie.id}/">
+                                            <img src="https://image.tmdb.org/t/p/w154${movie.poster_path}" alt="${movie.title} Poster" class="w-full h-auto object-cover" onerror="this.style.display='none'">
+                                            <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"></div>
+                                            <div class="absolute bottom-0 left-0 p-2">
+                                                <h3 class="text-white text-xs font-bold">${movie.title}</h3>
+                                                <p class="text-gray-400 text-xs">${movie.release_date ? movie.release_date.substring(0, 4) : ''}</p>
+                                            </div>
+                                        </a>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    `;
+                    // Add the raw JSON to history for the AI to know it provided recommendations
+                    chatHistory.push({ role: 'model', parts: [{ text: JSON.stringify(data) }] });
+                } else if (data.response) {
+                    aiResponseText = data.response;
+                    chatHistory.push({ role: 'model', parts: [{ text: aiResponseText }] });
+                } else {
+                    throw new Error('Invalid response format from AI.');
+                }
+                
+                addMessage('ai', aiResponseText, isCardResponse);
+
+            } catch (error) {
+                console.error('Error:', error);
+                const errorText = 'Sorry, I encountered an error. Please try again later.';
+                addMessage('ai', errorText);
+                chatHistory.push({ role: 'model', parts: [{ text: errorText }] });
+            } finally {
+                submitButton.disabled = false;
+                typingIndicator.classList.add('hidden');
+                chatInput.focus();
+            }
+        });
+    });
+</script>
+{% endblock %}

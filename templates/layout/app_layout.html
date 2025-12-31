@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block layout %}
+<div class="flex h-screen" x-data="{ sidebarOpen: true, isMobile: window.innerWidth < 768 }" @resize.window="isMobile = window.innerWidth < 768">
+    
+    <!-- Sidebar Component -->
+    {% include 'components/sidebar.html' %}
+
+    <!-- Main Content Wrapper -->
+    <div class="flex-1 flex flex-col overflow-hidden">
+        
+        <!-- Navbar Component -->
+        {% include 'components/navbar.html' %}
+
+        <!-- Page Content -->
+        <main class="flex-1 overflow-y-auto p-4 sm:p-6 md:p-8 bg-slate-900">
+            {% block content %}
+                {# Konten spesifik halaman akan dirender di sini #}
+            {% endblock %}
+        </main>
+    </div>
+
+</div>
+{% endblock %}

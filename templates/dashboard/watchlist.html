@@ -1,0 +1,29 @@
+{% extends "layout/app_layout.html" %}
+
+{% block title %}My Watchlist{% endblock %}
+
+{% block content %}
+<div class="container mx-auto">
+    <h1 class="text-3xl font-bold text-white mb-8">My Watchlist</h1>
+
+    {% if watchlist_items %}
+        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 md:gap-6">
+            {% for item in watchlist_items %}
+                {# The movie_card component expects a movie-like object. 
+                   The Watchlist model has the necessary fields. #}
+                {% with movie=item %}
+                    {% include "components/movie_card.html" with movie=movie %}
+                {% endwith %}
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="text-center py-16 bg-slate-800 rounded-lg">
+            <p class="text-xl text-white">Your watchlist is empty.</p>
+            <p class="text-gray-400 mt-2">Add movies to your watchlist to see them here.</p>
+            <a href="{% url 'movies:list' %}" class="mt-6 inline-block bg-blue-600 text-white font-bold py-2 px-6 rounded-full hover:bg-blue-700 transition-colors">
+                Explore Movies
+            </a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

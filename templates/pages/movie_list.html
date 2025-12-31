@@ -1,0 +1,66 @@
+{% extends "layout/app_layout.html" %}
+{% block title %}Discover Movies{% endblock %}
+
+{% block content %}
+<h1 class="text-3xl font-bold text-white mb-8">Discover Movies</h1>
+
+{# Filtering Form #}
+<form method="get" action="{% url 'movies:list' %}" class="bg-slate-800 p-4 rounded-lg mb-8 flex flex-wrap items-center gap-4">
+    <div class="flex-grow">
+        <label for="genre" class="text-sm font-medium text-gray-300 mr-2">Genre</label>
+        <select name="genre" id="genre" class="bg-slate-700 text-white rounded-md p-2 focus:ring-blue-500 focus:border-blue-500">
+            <option value="">All</option>
+            {% for genre in genres %}
+                <option value="{{ genre.id }}" {% if selected_filters.genre == genre.id|stringformat:"s" %}selected{% endif %}>{{ genre.name }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="flex-grow">
+        <label for="year" class="text-sm font-medium text-gray-300 mr-2">Year</label>
+        <select name="year" id="year" class="bg-slate-700 text-white rounded-md p-2 focus:ring-blue-500 focus:border-blue-500">
+            <option value="">All</option>
+            {% for year in years %}
+                <option value="{{ year }}" {% if selected_filters.year == year %}selected{% endif %}>{{ year }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="flex-grow">
+        <label for="rating" class="text-sm font-medium text-gray-300 mr-2">Min. Rating</label>
+        <select name="rating" id="rating" class="bg-slate-700 text-white rounded-md p-2 focus:ring-blue-500 focus:border-blue-500">
+            <option value="">All</option>
+            {% for rating in ratings %}
+                <option value="{{ rating }}" {% if selected_filters.rating == rating %}selected{% endif %}>{{ rating }}+</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="flex-grow md:flex-grow-0">
+        <button type="submit" class="w-full bg-blue-600 text-white font-bold py-2 px-6 rounded-md hover:bg-blue-700 transition-colors">Filter</button>
+    </div>
+</form>
+
+{% if movies %}
+    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 md:gap-6">
+        {% for movie in movies %}
+            {% include "components/movie_card.html" with movie=movie %}
+        {% endfor %}
+    </div>
+
+    {# Pagination Controls #}
+    <div class="mt-12 flex justify-center items-center space-x-4 text-white">
+        {% if pagination.has_previous %}
+            <a href="?page={{ pagination.current_page|add:'-1' }}{% if selected_filters.genre %}&genre={{ selected_filters.genre }}{% endif %}{% if selected_filters.year %}&year={{ selected_filters.year }}{% endif %}{% if selected_filters.rating %}&rating={{ selected_filters.rating }}{% endif %}" class="px-4 py-2 bg-slate-700 rounded-md hover:bg-blue-600 transition-colors">&laquo; Previous</a>
+        {% endif %}
+
+        <span class="px-4 py-2">Page {{ pagination.current_page }} of {{ pagination.total_pages }}</span>
+
+        {% if pagination.has_next %}
+            <a href="?page={{ pagination.current_page|add:'1' }}{% if selected_filters.genre %}&genre={{ selected_filters.genre }}{% endif %}{% if selected_filters.year %}&year={{ selected_filters.year }}{% endif %}{% if selected_filters.rating %}&rating={{ selected_filters.rating }}{% endif %}" class="px-4 py-2 bg-slate-700 rounded-md hover:bg-blue-600 transition-colors">Next &raquo;</a>
+        {% endif %}
+    </div>
+
+{% else %}
+    <div class="text-center py-16 bg-slate-800 rounded-lg">
+        <p class="text-gray-400">No movies found matching your criteria.</p>
+    </div>
+{% endif %}
+{% endblock %}
